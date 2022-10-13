@@ -11,7 +11,7 @@ export class CartDomain {
     static async showCart(req: Request, res: Response) {
         try {
             const cart = await Cart.findOne({ userId: req.currentUser?.id }).populate('cartList._id', '-version -_id -quantity');
-
+            var subTotal : number = 0;
             if (!cart) {
                 return res.status(200).send({})
             }
@@ -20,7 +20,15 @@ export class CartDomain {
                 return res.status(200).send({})
             }
 
-            return res.status(200).send(cart)
+            cart.cartList.forEach(element => {
+                const productPrice = Number(element._id.price);
+                const productQuantity = Number(element.purchaseQuantity);
+                subTotal = subTotal + (productPrice * productQuantity) ;
+            });
+
+            const response = {cart : cart , subTotal : subTotal}
+
+            return res.status(200).send(response);
         } catch (error: any) {
             throw new Error(error)
         }
