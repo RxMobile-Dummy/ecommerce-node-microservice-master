@@ -24,3 +24,10 @@ spec:
                 name: products-srv
                 port:
                   number: 3000
+          - path: /api/cart/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: cart-srv
+                port:
+                  number: 3000
