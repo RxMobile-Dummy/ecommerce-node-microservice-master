@@ -32,3 +32,11 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
+    - image: rushi7gandhi/rxshop-cart
+      context: cart
+      docker:
+        dockerfile : Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
