@@ -1,22 +1,7 @@
-import mongoose from 'mongoose';
-import { app } from './app';
-import { DatabaseConnectionError } from '@rx-demo/common';
-import { natsWrapper } from './nats-wrapper';
 import { OrderCreatedListener } from './events/listener/order-created-listener';
-import { OrderCancelledListener } from './events/listener/order-cancelled-listener';
-
-
-const port = 3000;
+import { natsWrapper } from './nats-wrapper';
 
 const start = async () => {
-    if (!process.env.JWT_KEY) {
-        throw new Error('JWT_KEY must be defined')
-    }
-
-    if (!process.env.MONGO_URI) {
-        throw new Error('MONGO_URI must be defined')
-    }
-
     if (!process.env.NATS_CLUSTER_ID) {
         throw new Error('NATS_CLUSTER_ID must be defined')
     }
@@ -45,15 +30,14 @@ const start = async () => {
         process.on('SIGTERM', () => natsWrapper.client.close());
 
         new OrderCreatedListener(natsWrapper.client).listen();
-        new OrderCancelledListener(natsWrapper.client).listen();
-        
-        await mongoose.connect(process.env.MONGO_URI);
+
 
     } catch (error: any) {
-        throw new Error(error);
+        throw new Error(error)
+
     }
 
-    app.listen(port);
+
 }
 
 start();

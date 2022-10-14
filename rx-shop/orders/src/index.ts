@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { app } from './app';
+import { ExpirationCompleteListener } from './events/listener/expiration-complete-listener';
 import { ProductCreatedListener } from './events/listener/product-created-listener';
 import { ProductUpdatedListener } from './events/listener/product-updated-listener';
 import { natsWrapper } from './nats-wrapper';
@@ -49,6 +50,7 @@ const start = async () => {
         // 2) product-updated-listener
         new ProductUpdatedListener(natsWrapper.client).listen();
         // 3) expiration-complete-listener
+        new ExpirationCompleteListener(natsWrapper.client).listen();
         // 4) payment-created-listener
 
 
@@ -58,10 +60,7 @@ const start = async () => {
         throw new Error(error);
     }
 
-    app.listen(port, () => {
-        console.log('order is listening on 3000');
-
-    });
+    app.listen(port);
 }
 
 start();

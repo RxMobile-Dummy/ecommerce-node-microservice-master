@@ -14,7 +14,6 @@ interface ProductDoc extends mongoose.Document {
     userId: string,
     quantity: number
     version: number,
-    orderId?: string
 }
 
 interface ProductModel extends mongoose.Model<ProductDoc> {
@@ -26,7 +25,6 @@ const productSchema = new mongoose.Schema({
     price: { type: Number, required: true },
     userId: { type: String, required: true },
     quantity: { type: Number, required: true },
-    orderId: { type: String }
 }, {
     toJSON: {
         transform(doc, ret) {
