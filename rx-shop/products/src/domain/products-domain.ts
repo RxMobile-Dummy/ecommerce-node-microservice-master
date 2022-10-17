@@ -55,9 +55,6 @@ export class ProductsDomain {
             throw new NotFoundError();
         }
 
-        if (product.orderId) {
-            throw new BadRequestError('cant edit a reserved product')
-        }
         if (product.userId !== req.currentUser?.id) {
             throw new NotAuthorizedError();
         }
