@@ -65,10 +65,12 @@ export class ordersDomain {
     static async createOrder(req: Request, res: Response) {
 
         const productsData = req.body.productsData;
+        var totalPrice = 0;
 
         await Promise.all(productsData.map(async (element: any) => {
             const id = element._id;
-            const quantity = element.purchaseQuantity;
+            const quantity = Number(element.purchaseQuantity);
+
 
             if (!ObjectId.isValid(id)) {
                 throw new BadRequestError('invalid product id');
@@ -82,6 +84,8 @@ export class ordersDomain {
             if (!checkQuantity) {
                 throw new BadRequestError(`${checkProduct.name} quantity might be less then ${quantity}`);
             }
+
+            totalPrice = totalPrice + Number(checkQuantity.price * quantity)
         }));
 
         const expiration = new Date();
@@ -91,7 +95,8 @@ export class ordersDomain {
             userId: req.currentUser!.id,
             status: OrderStatus.Created,
             expiresAt: expiration,
-            productList: productsData
+            productList: productsData,
+            totalPrice: totalPrice
         });
 
         await order.save();
@@ -102,7 +107,8 @@ export class ordersDomain {
             userId: order.userId,
             status: order.status,
             expiresAt: order.expiresAt.toISOString(),
-            productList: order.productList
+            productList: order.productList,
+            totalPrice: order.totalPrice
 
         })
 

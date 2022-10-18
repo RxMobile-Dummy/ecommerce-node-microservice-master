@@ -10,14 +10,15 @@ export class ExpirationCompleteListener extends Listener<ExpirationCompleteEvent
     async onMessage(data: ExpirationCompleteEvent['data'], msg: Message) {
         const order = await Order.findById(data.orderId).populate('productList._id');
         if (!order) {
+
             throw new Error('order not found')
         }
 
-        if(order.status === OrderStatus.Complete){
+        if (order.status === OrderStatus.Complete) {
             return msg.ack();
         }
 
-        if(order.status === OrderStatus.Cancelled){
+        if (order.status === OrderStatus.Cancelled) {
             return msg.ack();
         }
 
@@ -30,7 +31,7 @@ export class ExpirationCompleteListener extends Listener<ExpirationCompleteEvent
         await new OrderCancelledublisher(this.client).publish({
             id: order.id,
             version: order.version,
-            productList : order.productList
+            productList: order.productList
 
         });
 

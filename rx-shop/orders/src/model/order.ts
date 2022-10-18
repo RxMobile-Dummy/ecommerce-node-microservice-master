@@ -9,6 +9,7 @@ interface OrderAttrs {
     status: OrderStatus,
     expiresAt: Date,
     productList: [{ _id: string, purchaseQuantity: number }],
+    totalPrice: number
 }
 
 interface OrderDoc extends mongoose.Document {
@@ -16,6 +17,7 @@ interface OrderDoc extends mongoose.Document {
     status: OrderStatus,
     expiresAt: Date,
     productList: [{ _id: string, purchaseQuantity: number }],
+    totalPrice: number,
     version: number
 }
 
@@ -31,7 +33,8 @@ const orderSchema = new mongoose.Schema({
     productList: [{
         _id: { type: mongoose.Schema.Types.ObjectId, ref: 'Products', required: true },
         purchaseQuantity: { type: Number, required: true }
-    }]
+    }],
+    totalPrice: { type: Number, required: true }
 }, {
     toJSON: {
         transform(doc, ret) {

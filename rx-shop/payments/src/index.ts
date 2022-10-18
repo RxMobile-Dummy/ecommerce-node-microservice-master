@@ -1,11 +1,9 @@
 import mongoose from 'mongoose';
 import { app } from './app';
-import { ExpirationCompleteListener } from './events/listener/expiration-complete-listener';
-import { PaymentCreatedListener } from './events/listener/payment-created-listener';
-import { ProductCreatedListener } from './events/listener/product-created-listener';
-import { ProductUpdatedListener } from './events/listener/product-updated-listener';
+import { OrderCancelledListener } from './events/listener/order-cancelled-listener';
+import { OrderCompletedListener } from './events/listener/order-completed-listener';
+import { OrderCreatedListener } from './events/listener/order-created-listener';
 import { natsWrapper } from './nats-wrapper';
-
 
 const port = 3000;
 
@@ -27,7 +25,7 @@ const start = async () => {
     }
 
     if (!process.env.NATS_URI) {
-        throw new Error('NATS_URI must be defined')
+        throw new Error('NATS_URII must be defined')
     }
     try {
 
@@ -45,16 +43,16 @@ const start = async () => {
         process.on('SIGINT', () => natsWrapper.client.close());
         process.on('SIGTERM', () => natsWrapper.client.close());
 
-        new ProductCreatedListener(natsWrapper.client).listen();
-        new ProductUpdatedListener(natsWrapper.client).listen();
-        new ExpirationCompleteListener(natsWrapper.client).listen();
-        new PaymentCreatedListener(natsWrapper.client).listen();
-
+        new OrderCreatedListener(natsWrapper.client).listen();
+        new OrderCancelledListener(natsWrapper.client).listen();
+        new OrderCompletedListener(natsWrapper.client).listen();
 
         await mongoose.connect(process.env.MONGO_URI);
 
     } catch (error: any) {
-        throw new Error(error);
+
+        throw new Error(error)
+
     }
 
     app.listen(port);
