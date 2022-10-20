@@ -12,9 +12,9 @@ export class ProductUpdatedListener extends Listener<ProductUpdatedEvent>{
             throw new Error('Product not found')
         }
 
-        const { name, price, quantity } = data;
+        const { name, price, quantity ,available} = data;
 
-        product.set({ name, price, quantity });
+        product.set({ name, price, quantity ,available });
 
         await product.save();
 

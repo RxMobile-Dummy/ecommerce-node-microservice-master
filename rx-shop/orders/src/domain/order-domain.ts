@@ -79,10 +79,17 @@ export class ordersDomain {
             if (!checkProduct) {
                 throw new BadRequestError('invalid product');
             }
+            if(checkProduct.available == false){
+                throw new BadRequestError(`can't create order because ${checkProduct.name} is currently not available`)
+            }
+            if(checkProduct.quantity == 0){
+                throw new BadRequestError(`can't create order because ${checkProduct.name} is currently out of stock`)
+            }
 
             const checkQuantity = await Product.findOne({ $and: [{ _id: id }, { quantity: { $gte: quantity } }] });
+            
             if (!checkQuantity) {
-                throw new BadRequestError(`${checkProduct.name} quantity might be less then ${quantity}`);
+                throw new BadRequestError(`${checkProduct.name} available quantity is  ${checkProduct.quantity}`);
             }
 
             totalPrice = totalPrice + Number(checkQuantity.price * quantity)

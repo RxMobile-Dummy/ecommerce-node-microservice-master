@@ -1,5 +1,5 @@
 import express from 'express';
-import { body } from 'express-validator'
+import { body, oneOf } from 'express-validator'
 import { requireAuth, validateRequest } from '@rx-demo/common'
 import { ProductsDomain } from '../domain/products-domain';
 
@@ -12,7 +12,7 @@ Router.post('/api/products',
     [
         body('name').trim().not().isEmpty().withMessage('product name is required'),
         body('price').isFloat({ gt: 0 }).withMessage('Price must be greater then 0'),
-        body('quantity').isFloat({ gt: 0 }).withMessage('quantity must be greater then 0')
+        body('quantity').isInt({gt : 0}).withMessage('quantity must be an integer & greater then 0')
     ],
     validateRequest,
     ProductsDomain.createProduct
@@ -32,9 +32,17 @@ Router.get('/api/products/:id',
 Router.put('/api/products/:id',
     requireAuth,
     [
-        body('name').trim().not().isEmpty().withMessage('product name is required'),
-        body('price').isFloat({ gt: 0 }).withMessage('Price must be greater then 0'),
-        body('quantity').isFloat({ gt: 0 }).withMessage('quantity must be greater then 0')
+        body('name').trim().not().isEmpty().withMessage('product name is required').optional(),
+        body('price').isFloat({ gt: 0 }).withMessage('Price must be greater then 0').optional(),
+        body('quantity').isInt({ gt: 0 }).withMessage('quantity must be an integer & greater then 0').optional(),
+        body('available').isBoolean().withMessage('available must be a boolean').optional(),
+        oneOf([
+            body('name').notEmpty(),
+            body('price').notEmpty(),
+            body('quantity').notEmpty(),
+            body('available').notEmpty()
+        ],
+        "Atleast one of the field must be provided [name ,price , quantity , available]")
     ],
     validateRequest,
     ProductsDomain.updateProductById

@@ -1,5 +1,6 @@
 import { BadRequestError } from '@rx-demo/common';
 import { Request, Response } from 'express';
+import { ObjectId } from 'mongodb';
 import { Cart } from '../model/cart';
 import { Product } from '../model/product';
 
@@ -38,6 +39,9 @@ export class CartDomain {
     //ADD-TO-CART
     static async addToCart(req: Request, res: Response) {
         const productId = req.body.productId;
+        if (!ObjectId.isValid(productId)) {
+            throw new BadRequestError('invalid product id');
+        }
         const checkProduct = await Product.findById(productId);
 
         if (!checkProduct) {
@@ -94,6 +98,9 @@ export class CartDomain {
     // REMOVE-FROM_CART
     static async removeFromCart(req: Request, res: Response) {
         const productId = req.body.productId;
+        if (!ObjectId.isValid(productId)) {
+            throw new BadRequestError('invalid product id');
+        }
         const checkProduct = await Product.findById(productId);
 
         if (!checkProduct) {
