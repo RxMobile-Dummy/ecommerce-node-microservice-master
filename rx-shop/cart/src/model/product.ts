@@ -5,7 +5,8 @@ interface ProductAttrs {
     id: string,
     name: string,
     price: number,
-    quantity: number
+    quantity: number,
+    available : boolean
 }
 
 export interface ProductDoc extends mongoose.Document {
@@ -13,6 +14,7 @@ export interface ProductDoc extends mongoose.Document {
     price: number,
     quantity: number
     version: number,
+    available : boolean
 }
 
 interface ProductModel extends mongoose.Model<ProductDoc> {
@@ -23,6 +25,7 @@ const productSchema = new mongoose.Schema({
     name: { type: String, required: true },
     price: { type: Number, required: true },
     quantity: { type: Number, required: true },
+    available :{ type: Boolean, required: true },
 }, {
     toJSON: {
         transform(doc, ret) {
@@ -40,7 +43,8 @@ productSchema.statics.build = (attr: ProductAttrs) => {
         _id: attr.id,
         name: attr.name,
         price: attr.price,
-        quantity: attr.quantity
+        quantity: attr.quantity,
+        available : attr.available
     });
 }
 

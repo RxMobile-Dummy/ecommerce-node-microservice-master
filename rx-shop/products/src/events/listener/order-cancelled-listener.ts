@@ -38,6 +38,7 @@ export class OrderCancelledListener extends Listener<OrderCancelledEvent> {
                 quantity : product.quantity,
                 userId : product.userId,
                 version : product.version,
+                available : product.available
                 
             });
         }));

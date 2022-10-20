@@ -39,6 +39,7 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
                 quantity : product.quantity,
                 userId : product.userId,
                 version : product.version,
+                available : product.available
             });
         }));
 

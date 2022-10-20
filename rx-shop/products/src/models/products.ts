@@ -5,7 +5,8 @@ interface ProductAttrs {
     name: string,
     price: number,
     userId: string,
-    quantity: number
+    quantity: number,
+    available : boolean
 }
 
 interface ProductDoc extends mongoose.Document {
@@ -14,6 +15,7 @@ interface ProductDoc extends mongoose.Document {
     userId: string,
     quantity: number
     version: number,
+    available : boolean
 }
 
 interface ProductModel extends mongoose.Model<ProductDoc> {
@@ -25,6 +27,7 @@ const productSchema = new mongoose.Schema({
     price: { type: Number, required: true },
     userId: { type: String, required: true },
     quantity: { type: Number, required: true },
+    available :{ type: Boolean, required: true },
 }, {
     toJSON: {
         transform(doc, ret) {

@@ -8,7 +8,7 @@ const router = express.Router();
 // SIGN-UP
 router.post('/api/users/signup', [
     body('email').isEmail().withMessage('email must be valid'),
-    body('password').trim().isLength({ min: 8, max: 20 }).withMessage('password must be between 4 and 20 characters')
+    body('password').trim().isLength({ min: 6, max: 20 }).withMessage('password must be between 6 and 20 characters')
 ],
     validateRequest,
     AuthDomain.signUp
@@ -17,7 +17,7 @@ router.post('/api/users/signup', [
 // SIGN-IN
 router.post('/api/users/signin', [
     body('email').isEmail().withMessage('Email Must Be Valid'),
-    body('password').trim().notEmpty().withMessage('You Must supply a password')
+    body('password').trim().isLength({ min: 6, max: 20 }).withMessage('password must be between 6 and 20 characters')
 ],
     validateRequest,
     AuthDomain.signIn

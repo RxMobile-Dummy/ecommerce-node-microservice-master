@@ -5,10 +5,15 @@ import { Order } from '../models/order';
 import { Payment } from '../models/payment';
 import { natsWrapper } from '../nats-wrapper';
 import { PaymentCreatedPublisher } from '../events/publisher/payment-created-publisher';
+import { ObjectId } from 'mongodb';
 
 export class PaymentDomain {
     static async createPayemt(req: Request, res: Response) {
         const { orderId } = req.body;
+        if (!ObjectId.isValid(orderId)) {
+            throw new BadRequestError('invalid order id');
+        }
+        
         const order = await Order.findById(orderId);
 
         if (!order) {
@@ -17,8 +22,8 @@ export class PaymentDomain {
         if (order.userId !== req.currentUser!.id) {
             throw new NotAuthorizedError();
         }
-        if (order.status === OrderStatus.Cancelled) {
-            throw new BadRequestError('can not pay for cancelled order')
+        if (order.status === OrderStatus.Cancelled || (order.status === OrderStatus.Complete)) {
+            throw new BadRequestError(`can't pay for ${order.status} order`)
         }
 
         const charge = await stripe.paymentIntents.create({
